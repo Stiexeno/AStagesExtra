@@ -20,17 +20,17 @@ import java.util.function.Supplier;
 public class Attributes {
     public static final DeferredRegister<Attribute<?>> ATTRIBUTES = Attribute.setCurrentDeferredRegister(DeferredRegister.create(AStagesRegistries.Keys.ATTRIBUTES, AStages.MODID));
 
-    public static final Attribute<Boolean> RENDERING_NAME = Attribute.create("rendering_name", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> HIDING_TOOLTIP = Attribute.create("hiding_tooltip", AttributeTypes.BOOLEAN, true);
-    public static final Attribute<Boolean> PICKING_UP = Attribute.create("picking_up", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> EQUIPPING = Attribute.create("equipping", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> STORING_IN_INVENTORY = Attribute.create("storing_in_inventory", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> ATTACKING = Attribute.create("attacking", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> HIDING_JEI = Attribute.create("hiding_jei", AttributeTypes.BOOLEAN, true);
-    public static final Attribute<Boolean> BLOCK_PLACING = Attribute.create("block_placing", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> LEFT_CLICK_INTERACTIONS = Attribute.create("left_click_interactions", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> RIGHT_CLICK_INTERACTIONS = Attribute.create("right_click_interactions", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> BLOCK_BREAKING = Attribute.create("block_breaking", AttributeTypes.BOOLEAN, false);
+    public static final Attribute<Boolean> RENDERING_NAME = Attribute.create("rendering_name", AttributeTypes.BOOLEAN, true);
+    public static final Attribute<Boolean> HIDING_TOOLTIP = Attribute.create("hiding_tooltip", AttributeTypes.BOOLEAN, false);
+    public static final Attribute<Boolean> PICKING_UP = Attribute.create("picking_up", AttributeTypes.BOOLEAN, true);
+    public static final Attribute<Boolean> EQUIPPING = Attribute.create("equipping", AttributeTypes.BOOLEAN, true);
+    public static final Attribute<Boolean> STORING_IN_INVENTORY = Attribute.create("storing_in_inventory", AttributeTypes.BOOLEAN, true);
+    public static final Attribute<Boolean> ATTACKING = Attribute.create("attacking", AttributeTypes.BOOLEAN, true);
+    public static final Attribute<Boolean> HIDING_JEI = Attribute.create("hiding_jei", AttributeTypes.BOOLEAN, false);
+    public static final Attribute<Boolean> BLOCK_PLACING = Attribute.create("block_placing", AttributeTypes.BOOLEAN, true);
+    public static final Attribute<Boolean> LEFT_CLICK_INTERACTIONS = Attribute.create("left_click_interactions", AttributeTypes.BOOLEAN, true);
+    public static final Attribute<Boolean> RIGHT_CLICK_INTERACTIONS = Attribute.create("right_click_interactions", AttributeTypes.BOOLEAN, true);
+    public static final Attribute<Boolean> BLOCK_BREAKING = Attribute.create("block_breaking", AttributeTypes.BOOLEAN, true);
     public static final Attribute<Boolean> TAMABLE = Attribute.create("tamable", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> BREEDABLE = Attribute.create("breedable", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> MOUNTABLE = Attribute.create("mountable", AttributeTypes.BOOLEAN, false);
@@ -42,7 +42,7 @@ public class Attributes {
     public static final Attribute<Boolean> BIDIRECTIONAL = Attribute.create("bidirectional", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> ANVIL = Attribute.create("anvil", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> ENCHANTING_TABLE = Attribute.create("enchanting_table", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> BLOCK_INTERACTIONS = Attribute.create("block_restrictions", AttributeTypes.BOOLEAN, true);
+    public static final Attribute<Boolean> BLOCK_INTERACTIONS = Attribute.create("block_restrictions", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> MOB_SPAWNING = Attribute.create("mob_spawning", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> SPAWN_WITH_DIFFERENT_EQUIPMENT = Attribute.create("spawn_with_different_equipment", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> ALLOW_ACCESS = Attribute.create("allow_access", AttributeTypes.BOOLEAN, false);
@@ -51,9 +51,11 @@ public class Attributes {
     public static final Attribute<Boolean> HAS_CHECKER = Attribute.create("has_checker", AttributeTypes.BOOLEAN, false);
     // public static final Attribute<Boolean> HURT = Attribute.create("hurt", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> APPLY_EVERYWHERE = Attribute.create("apply_everywhere", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> STORING_IN_CONTAINERS = Attribute.create("storing_in_containers", AttributeTypes.BOOLEAN, false);
+    public static final Attribute<Boolean> STORING_IN_CONTAINERS = Attribute.create("storing_in_containers", AttributeTypes.BOOLEAN, true);
     public static final Attribute<Boolean> AFFECTS_PLAYER_ACTIONS = Attribute.create("affects_player_actions", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> STAGE_ALL_BLOCK_STATES = Attribute.create("stage_all_block_states", AttributeTypes.BOOLEAN, false);
+    
+    public static final Attribute<Boolean> BLOCK_FROM_CRAFTING = Attribute.create("block_from_crafting", AttributeTypes.BOOLEAN, false);
 
     public static final Attribute<Integer> PICK_UP_DELAY = Attribute.create("pick_up_delay", AttributeTypes.INTEGER, 60);
     public static final Attribute<Integer> AGE = Attribute.create("age", AttributeTypes.INTEGER, null); // null
@@ -61,6 +63,7 @@ public class Attributes {
     public static final Attribute<Integer> MIN_LIGHT_LEVEL = Attribute.create("min_light_level", AttributeTypes.INTEGER, null); // null
     public static final Attribute<Integer> MAX_LIGHT_LEVEL = Attribute.create("max_light_level", AttributeTypes.INTEGER, null); // null
     public static final Attribute<Integer> MAX_ACCESS = Attribute.create("max_access", AttributeTypes.INTEGER, 1);
+    
 
     public static final Attribute<ResourceLocation> DIMENSION = Attribute.create("dimension", AttributeTypes.RESOURCE_LOCATION, null);
 

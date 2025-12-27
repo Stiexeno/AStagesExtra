@@ -158,6 +158,21 @@ dependencies {
     implementation("curse.maven:pagans-blessing-952071:5817130")
 
     implementation("curse.maven:sodium-394468:6382651")
+
+    implementation("curse.maven:create-328085:7178775")
+
+    // ---- FTB MODS ----
+    compileOnly("curse.maven:ftb-quests-neoforge-289412:7324136")
+    compileOnly("curse.maven:ftb-teams-neoforge-404468:7315210")
+    compileOnly("curse.maven:ftb-library-neoforge-404465:7312258")
+
+    implementation("curse.maven:ftb-quests-neoforge-289412:7324136")
+    implementation("curse.maven:ftb-teams-neoforge-404468:7315210")
+    implementation("curse.maven:ftb-library-neoforge-404465:7312258")
+
+    // Architectury API (same logic)
+    compileOnly("curse.maven:architectury-api-419699:5786327")
+    implementation("curse.maven:architectury-api-419699:5786327")
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {

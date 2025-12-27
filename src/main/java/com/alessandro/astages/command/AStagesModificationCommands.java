@@ -11,6 +11,7 @@ import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.capability.OfflinePlayerStage;
 import com.alessandro.astages.command.argument.AStagesAddArgument;
 import com.alessandro.astages.command.argument.AStagesRemoveArgument;
+import com.alessandro.astages.core.ARestrictionManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -63,6 +64,9 @@ public class AStagesModificationCommands {
             .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", AStagesAddArgument.stages()).then(Commands.argument("silentChat", BoolArgumentType.bool()).then(Commands.argument("silentTitle", BoolArgumentType.bool())
                 .executes(context -> addStage(context, EntityArgument.getPlayers(context, "player"), AStagesAddArgument.getStage(context, "stage"), BoolArgumentType.getBool(context, "silentChat"), BoolArgumentType.getBool(context, "silentTitle")))
             )))))
+            .then(Commands.literal("add_all").then(Commands.argument("player", EntityArgument.players())
+                .executes(context -> addAllStages(context, EntityArgument.getPlayers(context, "player")))
+            ))
             .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", AStagesRemoveArgument.stages())
                 .executes(context -> removeStage(context, EntityArgument.getPlayers(context, "player"), AStagesRemoveArgument.getStage(context, "stage"), false, true))
             )))
@@ -86,7 +90,22 @@ public class AStagesModificationCommands {
             )
         );
     }
-
+    
+    private static int addAllStages(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> player)
+    {
+        var allStages = ARestrictionManager.ALL_STAGES;
+        
+        for (ServerPlayer p : player) {
+            for (var stage : allStages) {
+                AStagesUtils.addStage(AHolder.player(p), stage, true);
+            }
+            
+            p.sendSystemMessage(Component.translatable("chat.astages.add_all").withStyle(ChatFormatting.GREEN));
+        }
+        
+        return 1;
+    }
+    
     //private static int addStage(CommandContext<CommandSourceStack> context, String username, String stageToAdd, boolean silentChat, boolean silentTitle) {
     private static int addStage(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, String stageToAdd, boolean silentChat, boolean silentTitle) {
 //        var uuid = OfflinePlayerStage.USERNAME_UUID.get(username);

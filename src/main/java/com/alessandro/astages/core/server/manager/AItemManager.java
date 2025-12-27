@@ -125,8 +125,7 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
 
         if (holder.isPlayerActive()) {
             return restrictions.stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
-                r.isRestricted(stack)
+                !AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) && r.isRestricted(stack)
             ).findFirst().orElse(null);
         }
 

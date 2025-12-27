@@ -19,5 +19,7 @@ public class AStagesCommands {
         AStagesServerCommands.register(dispatcher);
         AStagesTimerCommands.register(dispatcher);
         AStagesInfoCommands.register(dispatcher);
+        
+        AFTBQuestsCommands.register(dispatcher);
     }
 }

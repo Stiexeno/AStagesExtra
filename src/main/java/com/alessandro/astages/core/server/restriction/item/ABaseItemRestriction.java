@@ -44,6 +44,7 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
             .addAttribute(Attributes.ATTACKING)
             .addAttribute(Attributes.HIDING_JEI)
             .addAttribute(Attributes.BLOCK_PLACING)
+            .addAttribute(Attributes.BLOCK_FROM_CRAFTING)
             .addAttribute(Attributes.LEFT_CLICK_INTERACTIONS)
             .addAttribute(Attributes.RIGHT_CLICK_INTERACTIONS)
             .addAttribute(Attributes.BLOCK_BREAKING)
@@ -160,6 +161,12 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
     @SuppressWarnings("unused")
     public ABaseItemRestriction<R, U> setHideInJEI(boolean value) {
         set(Attributes.HIDING_JEI, value);
+        return this;
+    }
+    
+    @SuppressWarnings("unused")
+    public ABaseItemRestriction<R, U> setBlockFromCrafting(boolean value) {
+        set(Attributes.BLOCK_FROM_CRAFTING, value);
         return this;
     }
 

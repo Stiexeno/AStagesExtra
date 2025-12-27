@@ -3,8 +3,11 @@ package com.alessandro.astages.mixin;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
+import com.alessandro.astages.store.Attribute;
+import com.alessandro.astages.store.Attributes;
 import dev.shadowsoffire.fastbench.util.CraftingInventoryExt;
 import dev.shadowsoffire.fastbench.util.FastBenchUtil;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -33,10 +36,12 @@ public class AFastBenchUtil {
             var oldRecipe = cir.getReturnValue();
             if (oldRecipe == null) { return; }
 
-            var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(AHolder.serverAndPlayer(astages$player), new RecipeWrapper(oldRecipe.value().getType(), oldRecipe.id()));
-
-            if (restriction != null) {
-                cir.setReturnValue(null);
+            var result = oldRecipe.value().getResultItem(world.registryAccess());
+            var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(AHolder.player(astages$player), result);
+            
+            if (restriction != null && restriction.isEnabled(Attributes.BLOCK_FROM_CRAFTING))
+            {
+                //cir.setReturnValue(null);
             }
         }
     }

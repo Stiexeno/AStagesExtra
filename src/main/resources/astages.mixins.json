@@ -27,6 +27,7 @@
     "recipe.minecraft.ACrafterBlock",
     "recipe.minecraft.ACrafterMenu",
     "recipe.minecraft.ACraftingMenu",
+    "recipe.minecraft.AResultSlotMixin",
     "recipe.minecraft.ASmithingMenu",
     "recipe.minecraft.AStonecutterMenu",
     "reload.AJeiStarter",
@@ -41,7 +42,8 @@
     "ore.AItemColors",
     "ore.AItemModelShaper",
     "ore.ASectionCompiler",
-    "recipe.minecraft.AStonecutterScreen"
+    "recipe.minecraft.AStonecutterScreen",
+    "recipe.minecraft.ALockedResultTooltipMixin"
   ],
   "injectors": {
     "defaultRequire": 1

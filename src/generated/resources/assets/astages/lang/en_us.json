@@ -1,5 +1,6 @@
 {
   "chat.astages.add": "Stage %s added successfully!",
+  "chat.astages.add_all": "All Stages added successfully!",
   "chat.astages.info.has_stages": "Stages unlocked by %s:",
   "chat.astages.info.list_item": " - %s",
   "chat.astages.info.no_stages": "No stages unlocked for player %s!",
@@ -47,5 +48,6 @@
   "tooltip.astages.item.hidden_name": "Unfamiliar Item",
   "tooltip.astages.item.item_description": "This item has been staged to [%s]",
   "tooltip.astages.item.jade_integration.block": "Unfamiliar Block",
-  "tooltip.astages.item.jade_integration.item": "Unfamiliar Item"
+  "tooltip.astages.item.jade_integration.item": "Unfamiliar Item",
+  "ftbquests.reward.ftbquests.recipe_item" : "Recipe Reward"
 }
