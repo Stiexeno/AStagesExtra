@@ -8,8 +8,15 @@ import dev.ftb.mods.ftbquests.net.EditObjectResponseMessage;
 import dev.ftb.mods.ftbquests.net.SyncTranslationMessageToClient;
 import dev.ftb.mods.ftbquests.quest.*;
 import dev.ftb.mods.ftbquests.quest.translation.TranslationKey;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -39,6 +46,49 @@ public class FTBQuestsUtils
         {
             createQuest(player, chapterName, stack);
         }
+    }
+    
+    public static String getRestrictionsFromQuests(Player player)
+    {
+        TeamData teamData = TeamData.get(player);
+        
+        BaseQuestFile questFile = teamData.getFile();
+        
+        if (questFile == null)
+            return "Quest file is null!";
+        
+        StringBuilder out = new StringBuilder();
+        
+        for (ChapterGroup group : questFile.getChapterGroups())
+            for (Chapter chapter : group.getChapters())
+                for (Quest quest : chapter.getQuests())
+                {
+                    quest.getRewards().forEach(reward ->
+                    {
+                        if (!(reward instanceof ARecipeReward recipeReward))
+                        {
+                            return;
+                        }
+                        
+                        ItemStack stack = recipeReward.getItem(); // <-- REQUIRED
+                        
+                        if (stack == null || stack.isEmpty())
+                            return;
+                        
+                        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
+                        
+                        String itemPath = itemId.getNamespace() + "/" + itemId.getPath();
+                        
+                        out.append("AStages.addRestrictionForItem(\"")
+                            .append(itemPath).append("\", \"")
+                            .append(itemId).append("\", \"")
+                            .append(itemId).append("\")\n")
+                            .append("    .setBlockFromCrafting(true)\n")
+                            .append("    .setHideInJEI(true);\n\n");
+                    });
+                }
+        
+        return out.toString();
     }
     
     private static void createQuest(Player player, String chapterName, ItemStack stack)
