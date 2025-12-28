@@ -1,9 +1,11 @@
 package com.alessandro.astages.integration.ftbquests.tasks.consumeContext.sources;
 
-import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.ItemConsumeContext;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.ItemConsumeSource;
+import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.ItemTask;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class PlayerInventorySource implements ItemConsumeSource
@@ -11,45 +13,51 @@ public class PlayerInventorySource implements ItemConsumeSource
     @Override
     public boolean isAvailable()
     {
-        return true; // always available
+        return true;
     }
     
     @Override
-    public long consume(ItemConsumeContext ctx)
+    public long process(
+        Player player,
+        ItemTask task,
+        long remaining,
+        boolean simulate,
+        @Nullable TeamData teamData)
     {
-        ServerPlayer player = ctx.player;
-        ItemTask task = ctx.task;
-        
         var inventory = player.getInventory();
         
-        for (int i = 0; i < inventory.items.size(); i++)
+        for (int i = 0; i < inventory.items.size() && remaining > 0; i++)
         {
-            if (ctx.remaining <= 0) break;
-            
             ItemStack stack = inventory.items.get(i);
+            if (stack.isEmpty()) continue;
+            if (!task.test(stack)) continue;
             
-            if (stack.isEmpty())
-                continue;
+            int matched = Math.min(stack.getCount(), (int) remaining);
             
-            if (!task.test(stack))
-                continue;
-            
-            int toConsume = (int) Math.min(stack.getCount(), ctx.remaining);
-            
-            stack.shrink(toConsume);
-            
-            ctx.teamData.addProgress(task, toConsume);
-            ctx.remaining -= toConsume;
-            
-            if (stack.isEmpty())
+            if (!simulate)
             {
-                inventory.items.set(i, ItemStack.EMPTY);
+                stack.shrink(matched);
+                
+                if (teamData != null)
+                {
+                    teamData.addProgress(task, matched);
+                }
+                
+                if (stack.isEmpty())
+                {
+                    inventory.items.set(i, ItemStack.EMPTY);
+                }
             }
+            
+            remaining -= matched;
         }
         
-        inventory.setChanged();
-        player.containerMenu.broadcastChanges();
+        if (!simulate && player instanceof ServerPlayer sp)
+        {
+            inventory.setChanged();
+            sp.containerMenu.broadcastChanges();
+        }
         
-        return ctx.remaining;
+        return remaining;
     }
 }

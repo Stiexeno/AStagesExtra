@@ -1,6 +1,5 @@
 package com.alessandro.astages.integration.ftbquests.tasks;
 
-import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.ItemConsumeContext;
 import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.ItemConsumeManager;
 import dev.ftb.mods.ftblibrary.config.Tristate;
 import dev.ftb.mods.ftbquests.item.MissingItem;
@@ -46,16 +45,12 @@ public class SinkItemTask extends ItemTask
         if (remaining <= 0)
             return;
         
-        ItemConsumeContext ctx = new ItemConsumeContext(
+        ItemConsumeManager.consume(
             player,
             teamData,
             this,
-            getItemStack(),
-            remaining,
-            RADIUS
+            remaining
         );
-        
-        ItemConsumeManager.consumeAll(ctx);
     }
     
     private void consumeFromNearbyInventories(TeamData teamData, ServerPlayer player)

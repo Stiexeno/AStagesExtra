@@ -43,7 +43,8 @@
     "ore.AItemModelShaper",
     "ore.ASectionCompiler",
     "recipe.minecraft.AStonecutterScreen",
-    "recipe.minecraft.ALockedResultTooltipMixin"
+    "recipe.minecraft.ALockedResultTooltipMixin",
+    "item.ftbquests.TaskButtonMixin"
   ],
   "injectors": {
     "defaultRequire": 1
