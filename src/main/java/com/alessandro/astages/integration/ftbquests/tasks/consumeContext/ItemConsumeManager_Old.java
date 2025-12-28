@@ -12,9 +12,8 @@ import net.minecraft.world.entity.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ItemConsumeManager
+public final class ItemConsumeManager_Old
 {
-    
     private static final List<ItemConsumeSource> SOURCES = new ArrayList<>();
     
     static
@@ -43,10 +42,12 @@ public final class ItemConsumeManager
     public static long countAvailable(
         Player player,
         ItemTask task,
-        long limit) {
+        long limit)
+    {
         long found = 0;
         
-        for (ItemConsumeSource source : SOURCES) {
+        for (ItemConsumeSource source : SOURCES)
+        {
             if (!source.isAvailable()) continue;
             found += source.count(player, task, limit - found);
             if (found >= limit) return limit;
@@ -78,7 +79,7 @@ public final class ItemConsumeManager
         ANetworking.sendToServer(new TaskAvailabilityRequestC2SPacket(id));
     }
     
-    private ItemConsumeManager()
+    private ItemConsumeManager_Old()
     {
     }
 }

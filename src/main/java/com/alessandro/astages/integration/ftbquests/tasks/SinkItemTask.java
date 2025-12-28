@@ -1,6 +1,6 @@
 package com.alessandro.astages.integration.ftbquests.tasks;
 
-import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.ItemConsumeManager;
+import com.alessandro.astages.integration.ftbquests.consume.ItemConsumeManager;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import dev.architectury.networking.NetworkManager;
 import dev.ftb.mods.ftblibrary.config.Tristate;

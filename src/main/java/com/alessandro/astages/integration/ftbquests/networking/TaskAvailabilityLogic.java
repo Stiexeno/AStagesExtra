@@ -1,8 +1,8 @@
 package com.alessandro.astages.integration.ftbquests.networking;
 
+import com.alessandro.astages.integration.ftbquests.consume.ItemConsumeManager;
 import com.alessandro.astages.integration.ftbquests.networking.packet.TaskAvailabilitySyncS2CPacket;
 import com.alessandro.astages.integration.ftbquests.tasks.SinkItemTask;
-import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.ItemConsumeManager;
 import com.alessandro.astages.networking.ANetworking;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
