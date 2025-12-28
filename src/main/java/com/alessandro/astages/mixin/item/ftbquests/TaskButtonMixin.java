@@ -2,6 +2,7 @@ package com.alessandro.astages.mixin.item.ftbquests;
 
 import com.alessandro.astages.integration.ftbquests.tasks.SinkItemTask;
 import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.ItemConsumeManager;
+import com.mojang.blaze3d.vertex.PoseStack;
 import dev.ftb.mods.ftblibrary.icon.Color4I;
 import dev.ftb.mods.ftblibrary.ui.Theme;
 import dev.ftb.mods.ftblibrary.util.StringUtils;
@@ -10,10 +11,12 @@ import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TaskButton.class)
 public abstract class TaskButtonMixin
@@ -21,64 +24,65 @@ public abstract class TaskButtonMixin
     @Shadow
     Task task;
     
-    @Redirect(
+    @Inject(
         method = "draw(Lnet/minecraft/client/gui/GuiGraphics;Ldev/ftb/mods/ftblibrary/ui/Theme;IIII)V",
-        at = @At(
-            value = "INVOKE",
-            target = "Ldev/ftb/mods/ftblibrary/ui/Theme;drawString(Lnet/minecraft/client/gui/GuiGraphics;Ljava/lang/Object;IILdev/ftb/mods/ftblibrary/icon/Color4I;I)I"
-        )
+        at = @At("HEAD"),
+        cancellable = true
     )
-    private int astages$drawRemainingAmount(
-        Theme theme,
+    private void astages$customDraw(
         GuiGraphics graphics,
-        Object originalText,
-        int x,
-        int y,
-        Color4I originalColor,
-        int shadow)
+        Theme theme,
+        int x, int y, int w, int h,
+        CallbackInfo ci
+    )
     {
+        ci.cancel(); // 💥 stop original logic
+        
+        int bs = h >= 32 ? 32 : 16;
+        TaskButton self = (TaskButton) (Object) this;
+        self.drawBackground(graphics, theme, x, y, w, h);
+        self.drawIcon(graphics, theme, x + (w - bs) / 2, y + (h - bs) / 2, bs, bs);
+        
         if (!(task instanceof SinkItemTask itemTask))
-        {
-            return theme.drawString(graphics, originalText, x, y, originalColor, shadow);
-        }
+            return;
         
-        TeamData teamData = null;
+        var player = Minecraft.getInstance().player;
+        if (player == null) return;
         
-        if (Minecraft.getInstance().player != null)
-        {
-            teamData = TeamData.get(Minecraft.getInstance().player);
-        }
+        TeamData teamData = TeamData.get(player);
+        if (teamData == null) return;
         
-        if (teamData == null)
-        {
-            return theme.drawString(graphics, originalText, x, y, originalColor, shadow);
-        }
-        
-        long max = itemTask.getMaxProgress();
-        long current = teamData.getProgress(itemTask);
-        long remaining = Math.max(0, max - current);
-        
-        long have = ItemConsumeManager.countAvailable(
-            Minecraft.getInstance().player,
-            itemTask,
-            remaining
+        long remaining = Math.max(0,
+            itemTask.getMaxProgress() - teamData.getProgress(itemTask)
         );
         
-        boolean canSubmitNow = ItemConsumeManager.canConsume(
-            Minecraft.getInstance().player,
-            itemTask,
-            remaining
+        long have = ItemConsumeManager.countAvailable(player, itemTask, remaining);
+        boolean canSubmit = ItemConsumeManager.canConsume(player, itemTask, remaining);
+        
+        Component text = Component.literal(
+            StringUtils.formatDouble(have, true)
+                + "/"
+                + StringUtils.formatDouble(remaining, true)
         );
-        
-        String text = StringUtils.formatDouble(have, true) + "/" + StringUtils.formatDouble(remaining, true);
-        
-        Color4I color = canSubmitNow
-            ? Color4I.rgb(0x55FF55) // green
-            : originalColor;
         
         int textWidth = theme.getStringWidth(text);
-        int centeredX = -textWidth / 2;
+        float centerX = x + w / 2F - (textWidth / 2F) * 0.5F;
+        float centerY = y + h - 6F; // bottom center, tweak if needed
         
-        return theme.drawString(graphics, text, centeredX, y, color, shadow);
+        PoseStack pose = graphics.pose();
+        
+        pose.pushPose();
+        pose.translate(centerX, centerY, 200);
+        pose.scale(0.5F, 0.5F, 1F);
+        
+        theme.drawString(
+            graphics,
+            text,
+            0, 0,
+            canSubmit ? Color4I.rgb(0x55FF55) : Color4I.WHITE,
+            Theme.SHADOW
+        );
+        
+        pose.popPose();
     }
 }
