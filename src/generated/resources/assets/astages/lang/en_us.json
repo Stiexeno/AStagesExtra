@@ -49,5 +49,12 @@
   "tooltip.astages.item.item_description": "This item has been staged to [%s]",
   "tooltip.astages.item.jade_integration.block": "Unfamiliar Block",
   "tooltip.astages.item.jade_integration.item": "Unfamiliar Item",
-  "ftbquests.reward.ftbquests.recipe_item" : "Recipe Reward"
+  "ftbquests.reward.ftbquests.recipe_item" : "Recipe Reward",
+
+  "tooltip.astages.sink_item.condition1" : "When clicked:",
+  "tooltip.astages.sink_item.behaviour1": "Consumes required items from:",
+  "tooltip.astages.sink_item.behaviour2": "• Inventory",
+  "tooltip.astages.sink_item.behaviour3": "• Backpack",
+  "tooltip.astages.sink_item.behaviour4": "• Nearby storages _(within 10 blocks)_"
+
 }

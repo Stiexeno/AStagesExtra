@@ -7,6 +7,7 @@
 @Suppress("PropertyName") val mod_description: String by project
 
 @Suppress("PropertyName") val minecraft_version: String by project
+@Suppress("PropertyName") val ponder_version: String by project
 @Suppress("PropertyName") val neo_version: String by project
 @Suppress("PropertyName") val parchment_mappings_version: String by project
 @Suppress("PropertyName") val parchment_minecraft_version: String by project
@@ -95,6 +96,9 @@ repositories {
         url = uri("https://cursemaven.com")
     }
 
+    maven { url = uri("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") }
+    maven { url = uri("https://maven.createmod.net") }
+
     maven {
         url = uri("https://maven.architectury.dev")
         content {
@@ -169,6 +173,10 @@ dependencies {
     implementation("curse.maven:ftb-quests-neoforge-289412:7324136")
     implementation("curse.maven:ftb-teams-neoforge-404468:7315210")
     implementation("curse.maven:ftb-library-neoforge-404465:7312258")
+
+    compileOnly("curse.maven:create-328085:7178775")
+    implementation("net.createmod.ponder:ponder-neoforge:$ponder_version+mc$minecraft_version")
+    compileOnly("net.createmod.ponder:ponder-neoforge:$ponder_version+mc$minecraft_version")
 
     // Architectury API (same logic)
     compileOnly("curse.maven:architectury-api-419699:5786327")
