@@ -1,7 +1,9 @@
 package com.alessandro.astages.integration.ftbquests.tasks.consumeContext;
 
+import com.alessandro.astages.integration.ftbquests.networking.packet.TaskAvailabilityRequestC2SPacket;
 import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.sources.PlayerInventorySource;
 import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.sources.StorageBlockSource;
+import com.alessandro.astages.networking.ANetworking;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.ItemTask;
 import net.minecraft.server.level.ServerPlayer;
@@ -53,7 +55,7 @@ public final class ItemConsumeManager
         return found;
     }
     
-    public static boolean consume(
+    public static void consume(
         ServerPlayer player,
         TeamData teamData,
         ItemTask task,
@@ -69,10 +71,11 @@ public final class ItemConsumeManager
             remaining = source.process(player, task, remaining, false, teamData);
             
             if (remaining <= 0)
-                return true;
+                return;
         }
         
-        return false;
+        long id = task.getId();
+        ANetworking.sendToServer(new TaskAvailabilityRequestC2SPacket(id));
     }
     
     private ItemConsumeManager()

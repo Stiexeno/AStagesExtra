@@ -44,9 +44,6 @@ public abstract class TaskButtonMixin
         
         long id = itemTask.getId();
         
-//        if (TaskAvailabilityCache.get(id) != null)
-//            return;
-
         ANetworking.sendToServer(
             new TaskAvailabilityRequestC2SPacket(id)
         );
