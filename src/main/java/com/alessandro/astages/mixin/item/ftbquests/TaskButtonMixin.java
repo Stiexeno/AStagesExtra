@@ -2,6 +2,7 @@ package com.alessandro.astages.mixin.item.ftbquests;
 
 import com.alessandro.astages.integration.ftbquests.tasks.SinkItemTask;
 import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.ItemConsumeManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.ftb.mods.ftblibrary.icon.Color4I;
 import dev.ftb.mods.ftblibrary.ui.Theme;
@@ -9,11 +10,14 @@ import dev.ftb.mods.ftblibrary.util.StringUtils;
 import dev.ftb.mods.ftbquests.client.gui.quests.TaskButton;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
+import dev.ftb.mods.ftbquests.quest.theme.property.ThemeProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -33,8 +37,7 @@ public abstract class TaskButtonMixin
         GuiGraphics graphics,
         Theme theme,
         int x, int y, int w, int h,
-        CallbackInfo ci
-    )
+        CallbackInfo ci)
     {
         ci.cancel(); // 💥 stop original logic
         
@@ -47,11 +50,34 @@ public abstract class TaskButtonMixin
             return;
         
         var player = Minecraft.getInstance().player;
-        if (player == null) return;
+        if (player == null)
+            return;
         
         TeamData teamData = TeamData.get(player);
-        if (teamData == null) return;
         
+        if (teamData == null)
+            return;
+        
+        if (teamData.isCompleted(task))
+        {
+            PoseStack pose = graphics.pose();
+            pose.pushPose();
+            pose.translate(0, 0, 200);
+            float centerY = y + h - 10F; // bottom center, tweak if needed
+            RenderSystem.enableBlend();
+            ThemeProperties.CHECK_ICON.get().draw(graphics, x + w - 9, (int) centerY, 9, 9);
+            
+            pose.popPose();
+        }
+        else
+        {
+            aStagesExtra$drawButtonText(graphics, theme, x, y, w, h, itemTask, teamData, player);
+        }
+    }
+    
+    @Unique
+    private static void aStagesExtra$drawButtonText(GuiGraphics graphics, Theme theme, int x, int y, int w, int h, SinkItemTask itemTask, TeamData teamData, LocalPlayer player)
+    {
         long remaining = Math.max(0,
             itemTask.getMaxProgress() - teamData.getProgress(itemTask)
         );
