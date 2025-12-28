@@ -164,22 +164,16 @@ dependencies {
     implementation("curse.maven:sodium-394468:6382651")
 
     implementation("curse.maven:create-328085:7178775")
-
-    // ---- FTB MODS ----
-    compileOnly("curse.maven:ftb-quests-neoforge-289412:7324136")
-    compileOnly("curse.maven:ftb-teams-neoforge-404468:7315210")
-    compileOnly("curse.maven:ftb-library-neoforge-404465:7312258")
+    implementation("curse.maven:sophisticated-storage-619320:7369174")
+    implementation("curse.maven:sophisticated-core-618298:7369152")
+    implementation("curse.maven:sophisticated-backpacks-422301:7369164")
 
     implementation("curse.maven:ftb-quests-neoforge-289412:7324136")
     implementation("curse.maven:ftb-teams-neoforge-404468:7315210")
     implementation("curse.maven:ftb-library-neoforge-404465:7312258")
 
-    compileOnly("curse.maven:create-328085:7178775")
     implementation("net.createmod.ponder:ponder-neoforge:$ponder_version+mc$minecraft_version")
-    compileOnly("net.createmod.ponder:ponder-neoforge:$ponder_version+mc$minecraft_version")
 
-    // Architectury API (same logic)
-    compileOnly("curse.maven:architectury-api-419699:5786327")
     implementation("curse.maven:architectury-api-419699:5786327")
 }
 
