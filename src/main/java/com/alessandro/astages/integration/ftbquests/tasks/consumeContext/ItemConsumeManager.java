@@ -38,6 +38,21 @@ public final class ItemConsumeManager
         return false;
     }
     
+    public static long countAvailable(
+        Player player,
+        ItemTask task,
+        long limit) {
+        long found = 0;
+        
+        for (ItemConsumeSource source : SOURCES) {
+            if (!source.isAvailable()) continue;
+            found += source.count(player, task, limit - found);
+            if (found >= limit) return limit;
+        }
+        
+        return found;
+    }
+    
     public static boolean consume(
         ServerPlayer player,
         TeamData teamData,

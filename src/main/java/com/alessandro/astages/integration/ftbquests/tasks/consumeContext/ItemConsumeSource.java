@@ -8,13 +8,6 @@ import net.minecraft.world.entity.player.Player;
 public interface ItemConsumeSource {
     boolean isAvailable();
     
-    /**
-     * @param player     ServerPlayer OR LocalPlayer (never both)
-     * @param task       ItemTask to test
-     * @param remaining  how many still needed
-     * @param simulate   true = count only, false = actually consume
-     * @return remaining amount after this source
-     */
     long process(
         Player player,
         ItemTask task,
@@ -22,4 +15,11 @@ public interface ItemConsumeSource {
         boolean simulate,
         @Nullable TeamData teamData
     );
+    
+    long count(
+        Player player,
+        ItemTask task,
+        long limit
+    );
 }
+

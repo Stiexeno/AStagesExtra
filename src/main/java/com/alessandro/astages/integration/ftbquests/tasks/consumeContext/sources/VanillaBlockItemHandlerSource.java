@@ -25,6 +25,40 @@ public class VanillaBlockItemHandlerSource implements ItemConsumeSource {
     }
     
     @Override
+    public long count(Player player, ItemTask task, long limit) {
+        long found = 0;
+        
+        Level level = player.level();
+        BlockPos center = player.blockPosition();
+        int radius = 10;
+        
+        BlockPos min = center.offset(-radius, -radius, -radius);
+        BlockPos max = center.offset(radius, radius, radius);
+        
+        Set<IItemHandler> visited = new HashSet<>();
+        
+        for (BlockPos pos : BlockPos.betweenClosed(min, max)) {
+            for (Direction dir : Direction.values()) {
+                IItemHandler handler =
+                    level.getCapability(Capabilities.ItemHandler.BLOCK, pos, dir);
+                
+                if (handler == null || !visited.add(handler)) continue;
+                
+                for (int slot = 0; slot < handler.getSlots(); slot++) {
+                    ItemStack stack = handler.getStackInSlot(slot);
+                    if (stack.isEmpty()) continue;
+                    if (!task.test(stack)) continue;
+                    
+                    found += stack.getCount();
+                    if (found >= limit) return limit;
+                }
+            }
+        }
+        
+        return found;
+    }
+    
+    @Override
     public long process(
         Player player,
         ItemTask task,

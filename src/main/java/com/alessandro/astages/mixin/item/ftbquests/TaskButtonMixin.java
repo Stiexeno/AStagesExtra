@@ -4,13 +4,12 @@ import com.alessandro.astages.integration.ftbquests.tasks.SinkItemTask;
 import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.ItemConsumeManager;
 import dev.ftb.mods.ftblibrary.icon.Color4I;
 import dev.ftb.mods.ftblibrary.ui.Theme;
+import dev.ftb.mods.ftblibrary.util.StringUtils;
 import dev.ftb.mods.ftbquests.client.gui.quests.TaskButton;
 import dev.ftb.mods.ftbquests.quest.TeamData;
-import dev.ftb.mods.ftbquests.quest.task.ItemTask;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,11 +35,9 @@ public abstract class TaskButtonMixin
         int x,
         int y,
         Color4I originalColor,
-        int shadow
-    )
+        int shadow)
     {
-        // Only affect ItemTask (including your SinkItemTask)
-        if (!(task instanceof ItemTask itemTask))
+        if (!(task instanceof SinkItemTask itemTask))
         {
             return theme.drawString(graphics, originalText, x, y, originalColor, shadow);
         }
@@ -61,45 +58,27 @@ public abstract class TaskButtonMixin
         long current = teamData.getProgress(itemTask);
         long remaining = Math.max(0, max - current);
         
-        // Build new text
-        Component newText = Component.literal(Long.toString(remaining));
+        long have = ItemConsumeManager.countAvailable(
+            Minecraft.getInstance().player,
+            itemTask,
+            remaining
+        );
         
-        boolean canSubmitNow = true;
+        boolean canSubmitNow = ItemConsumeManager.canConsume(
+            Minecraft.getInstance().player,
+            itemTask,
+            remaining
+        );
         
-        if (itemTask instanceof SinkItemTask sink && Minecraft.getInstance().player != null)
-        {
-            canSubmitNow = ItemConsumeManager.canConsume(
-                Minecraft.getInstance().player,
-                sink,
-                remaining
-            );
-        }
+        String text = StringUtils.formatDouble(have, true) + "/" + StringUtils.formatDouble(remaining, true);
         
         Color4I color = canSubmitNow
             ? Color4I.rgb(0x55FF55) // green
             : originalColor;
         
-        int width = theme.drawString(graphics, newText, x, y, color, shadow);
-//
-//        // Draw small green check icon if can submit
-//        if (canSubmitNow)
-//        {
-//            graphics.pose().pushPose();
-//            graphics.pose().translate(0, 0, 210);
-//
-//            Icon check = ThemeProperties.CHECK_ICON.get();
-//
-//            check.draw(
-//                graphics,
-//                x + width + 1,
-//                y - 1,
-//                6,
-//                6
-//            );
-//
-//            graphics.pose().popPose();
-//        }
+        int textWidth = theme.getStringWidth(text);
+        int centeredX = -textWidth / 2;
         
-        return width;
+        return theme.drawString(graphics, text, centeredX, y, color, shadow);
     }
 }

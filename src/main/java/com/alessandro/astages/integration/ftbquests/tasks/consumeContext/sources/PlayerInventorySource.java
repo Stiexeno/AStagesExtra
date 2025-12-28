@@ -17,6 +17,22 @@ public class PlayerInventorySource implements ItemConsumeSource
     }
     
     @Override
+    public long count(Player player, ItemTask task, long limit) {
+        long found = 0;
+        
+        var inventory = player.getInventory();
+        for (ItemStack stack : inventory.items) {
+            if (stack.isEmpty()) continue;
+            if (!task.test(stack)) continue;
+            
+            found += stack.getCount();
+            if (found >= limit) return limit;
+        }
+        
+        return found;
+    }
+    
+    @Override
     public long process(
         Player player,
         ItemTask task,
