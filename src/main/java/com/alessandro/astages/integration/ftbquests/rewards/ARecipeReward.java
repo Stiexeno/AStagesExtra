@@ -3,7 +3,6 @@ package com.alessandro.astages.integration.ftbquests.rewards;
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.AStagesUtils;
 import com.alessandro.astages.api.holder.AHolder;
-import com.alessandro.astages.integration.ftbquests.AFTBRewards;
 import com.alessandro.astages.integration.ftbquests.common.ScaledIcon;
 import dev.architectury.hooks.item.ItemStackHooks;
 import dev.architectury.networking.NetworkManager;

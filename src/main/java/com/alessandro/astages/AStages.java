@@ -6,7 +6,8 @@ import com.alessandro.astages.command.argument.ACommandArguments;
 import com.alessandro.astages.config.AStagesClient;
 import com.alessandro.astages.config.AStagesCommon;
 import com.alessandro.astages.core.ARestrictionManager;
-import com.alessandro.astages.integration.ftbquests.AFTBRewards;
+import com.alessandro.astages.integration.ftbquests.rewards.AFTBRewards;
+import com.alessandro.astages.integration.ftbquests.tasks.AFTBTasks;
 import com.alessandro.astages.loot.AModifiers;
 import com.alessandro.astages.plugin.APluginFinder;
 import com.alessandro.astages.plugin.APluginManager;
@@ -41,6 +42,7 @@ public class AStages
     public AStages(IEventBus modEventBus, ModContainer modContainer)
     {
         AFTBRewards.init();
+        AFTBTasks.init();
         
         AProvider.ATTACHMENT_TYPES.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);

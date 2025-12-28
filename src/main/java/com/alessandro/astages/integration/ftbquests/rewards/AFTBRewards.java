@@ -1,6 +1,5 @@
-package com.alessandro.astages.integration.ftbquests;
+package com.alessandro.astages.integration.ftbquests.rewards;
 
-import com.alessandro.astages.integration.ftbquests.rewards.ARecipeReward;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.reward.RewardType;
