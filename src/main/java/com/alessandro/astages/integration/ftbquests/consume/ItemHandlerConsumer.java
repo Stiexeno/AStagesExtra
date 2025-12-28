@@ -39,7 +39,12 @@ public final class ItemHandlerConsumer
         return found;
     }
     
-    public long consume(Player player, Collection<HandlerRef> handlers, ItemTask task, long remaining, boolean simulate, @Nullable TeamData teamData)
+    public long consume(Player player,
+                        Collection<HandlerRef> handlers,
+                        ItemTask task,
+                        long remaining,
+                        boolean simulate,
+                        @Nullable TeamData teamData)
     {
         for (HandlerRef ref : handlers)
         {
@@ -47,26 +52,34 @@ public final class ItemHandlerConsumer
             
             for (int i = 0; i < h.getSlots() && remaining > 0; i++)
             {
-                ItemStack stack = h.getStackInSlot(i);
-                if (stack.isEmpty()) continue;
-                if (!task.test(stack)) continue;
-                
-                int toTake = (int) Math.min(stack.getCount(), remaining);
-                if (toTake <= 0) continue;
-                
-                if (simulate)
+                while (remaining > 0)
                 {
-                    remaining -= toTake;
-                    continue;
-                }
-                
-                ItemStack extracted = h.extractItem(i, toTake, false);
-                if (extracted.isEmpty()) continue;
-                
-                remaining -= extracted.getCount();
-                if (teamData != null)
-                {
-                    teamData.addProgress(task, extracted.getCount());
+                    ItemStack stack = h.getStackInSlot(i);
+                    
+                    if (stack.isEmpty())
+                        break;
+                    
+                    if (!task.test(stack))
+                        break;
+                    
+                    int toTake = (int) Math.min(stack.getCount(), remaining);
+                    if (toTake <= 0) break;
+                    
+                    if (simulate)
+                    {
+                        remaining -= toTake;
+                        break; // simulate should not loop-extract
+                    }
+                    
+                    ItemStack extracted = h.extractItem(i, toTake, false);
+                    if (extracted.isEmpty()) break;
+                    
+                    remaining -= extracted.getCount();
+                    
+                    if (teamData != null)
+                    {
+                        teamData.addProgress(task, extracted.getCount());
+                    }
                 }
             }
             
@@ -75,7 +88,8 @@ public final class ItemHandlerConsumer
                 ref.onChanged().run();
             }
             
-            if (remaining <= 0) break;
+            if (remaining <= 0)
+                break;
         }
         
         return remaining;

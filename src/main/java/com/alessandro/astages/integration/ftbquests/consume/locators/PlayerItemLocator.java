@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
 import java.util.function.Consumer;
 
@@ -21,23 +22,30 @@ public final class PlayerItemLocator implements ItemHandlerLocator
     @Override
     public void find(Player player, Consumer<HandlerRef> out)
     {
-        var inv = player.getInventory();
+        var inventory = player.getInventory();
         
-        // main inventory
-        for (int slot = 0; slot < inv.items.size(); slot++)
+        IItemHandler playerInvHandler = new InvWrapper(inventory);
+        Runnable onChanged = () ->
         {
-            ItemStack stack = inv.items.get(slot);
+            inventory.setChanged();
+            if (player instanceof ServerPlayer sp) sp.containerMenu.broadcastChanges();
+        };
+        
+        out.accept(new HandlerRef(new InventoryKey(player), playerInvHandler, onChanged));
+        
+        for (int slot = 0; slot < inventory.items.size(); slot++)
+        {
+            ItemStack stack = inventory.items.get(slot);
             findFromStack(player, stack, new SlotKey(player, slot), out);
         }
         
-        // armor + offhand
-        int idx = inv.items.size();
-        for (ItemStack stack : inv.armor)
+        int idx = inventory.items.size();
+        for (ItemStack stack : inventory.armor)
         {
             findFromStack(player, stack, new SlotKey(player, idx++), out);
         }
         
-        findFromStack(player, inv.offhand.getFirst(), new SlotKey(player, idx), out);
+        findFromStack(player, inventory.offhand.getFirst(), new SlotKey(player, idx), out);
     }
     
     private void findFromStack(
@@ -68,6 +76,10 @@ public final class PlayerItemLocator implements ItemHandlerLocator
     }
     
     private record SlotKey(Player player, int slot)
+    {
+    }
+    
+    private record InventoryKey(Player player)
     {
     }
 }

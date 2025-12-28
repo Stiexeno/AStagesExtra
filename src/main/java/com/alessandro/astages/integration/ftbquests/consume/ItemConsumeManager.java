@@ -18,7 +18,7 @@ public final class ItemConsumeManager
 {
     private static final List<ItemHandlerLocator> LOCATORS = List.of(
         new PlayerItemLocator(),
-        new BlockItemLocator(10)
+        new BlockItemLocator(16)
     );
     
     private static final ItemHandlerConsumer CONSUMER = new ItemHandlerConsumer();
@@ -29,21 +29,6 @@ public final class ItemConsumeManager
         long limit)
     {
         return CONSUMER.count(player, discover(player), task, limit);
-    }
-    
-    public static boolean canConsume(
-        Player player,
-        ItemTask task,
-        long amount)
-    {
-        return CONSUMER.consume(
-            player,
-            discover(player),
-            task,
-            amount,
-            true,
-            null
-        ) <= 0;
     }
     
     public static void consume(
