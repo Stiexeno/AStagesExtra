@@ -4,6 +4,8 @@ import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.integration.ftbquests.networking.packet.TaskAvailabilityRequestC2SPacket;
+import com.alessandro.astages.integration.ftbquests.networking.packet.TaskAvailabilitySyncS2CPacket;
 import com.alessandro.astages.networking.packet.dimension.DimensionIdsSyncerS2CPacket;
 import com.alessandro.astages.networking.packet.item.*;
 import com.alessandro.astages.networking.packet.mob.MobSyncerS2CPacket;
@@ -45,7 +47,10 @@ public class ANetworking {
         registrar.playToClient(ItemPredicateSyncerS2CPacket.TYPE, ItemPredicateSyncerS2CPacket.STREAM_CODEC, ItemPredicateSyncerS2CPacket::handle);
         registrar.playToClient(ItemPropertySyncerS2CPacket.TYPE, ItemPropertySyncerS2CPacket.STREAM_CODEC, ItemPropertySyncerS2CPacket::handle);
         registrar.playToServer(RequestItemPropertyC2SPacket.TYPE, RequestItemPropertyC2SPacket.STREAM_CODEC, RequestItemPropertyC2SPacket::handle);
-
+        
+        registrar.playToServer(TaskAvailabilityRequestC2SPacket.TYPE, TaskAvailabilityRequestC2SPacket.STREAM_CODEC, TaskAvailabilityRequestC2SPacket::handle);
+        registrar.playToClient(TaskAvailabilitySyncS2CPacket.TYPE, TaskAvailabilitySyncS2CPacket.STREAM_CODEC, TaskAvailabilitySyncS2CPacket::handle);
+        
         // RECIPE
         registrar.playToClient(RecipeSyncerS2CPacket.TYPE, RecipeSyncerS2CPacket.STREAM_CODEC, RecipeSyncerS2CPacket::handle);
         registrar.playToClient(RecipeModSyncerS2CPacket.TYPE, RecipeModSyncerS2CPacket.STREAM_CODEC, RecipeModSyncerS2CPacket::handle);

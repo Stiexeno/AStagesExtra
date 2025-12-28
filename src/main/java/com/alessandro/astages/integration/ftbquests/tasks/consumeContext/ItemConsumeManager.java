@@ -1,7 +1,7 @@
 package com.alessandro.astages.integration.ftbquests.tasks.consumeContext;
 
 import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.sources.PlayerInventorySource;
-import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.sources.VanillaBlockItemHandlerSource;
+import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.sources.StorageBlockSource;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.ItemTask;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,7 +18,7 @@ public final class ItemConsumeManager
     static
     {
         SOURCES.add(new PlayerInventorySource());
-        SOURCES.add(new VanillaBlockItemHandlerSource());
+        SOURCES.add(new StorageBlockSource());
     }
     
     public static boolean canConsume(

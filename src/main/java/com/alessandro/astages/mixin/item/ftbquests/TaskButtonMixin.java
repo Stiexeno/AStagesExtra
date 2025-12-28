@@ -1,10 +1,13 @@
 package com.alessandro.astages.mixin.item.ftbquests;
 
+import com.alessandro.astages.integration.ftbquests.networking.packet.TaskAvailabilityCache;
+import com.alessandro.astages.integration.ftbquests.networking.packet.TaskAvailabilityRequestC2SPacket;
 import com.alessandro.astages.integration.ftbquests.tasks.SinkItemTask;
-import com.alessandro.astages.integration.ftbquests.tasks.consumeContext.ItemConsumeManager;
+import com.alessandro.astages.networking.ANetworking;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.ftb.mods.ftblibrary.icon.Color4I;
+import dev.ftb.mods.ftblibrary.ui.Panel;
 import dev.ftb.mods.ftblibrary.ui.Theme;
 import dev.ftb.mods.ftblibrary.util.StringUtils;
 import dev.ftb.mods.ftbquests.client.gui.quests.TaskButton;
@@ -27,6 +30,27 @@ public abstract class TaskButtonMixin
 {
     @Shadow
     Task task;
+    
+    // Prevent duplicate requests if FTB rebuilds buttons
+    
+    @Inject(method = "<init>(Ldev/ftb/mods/ftblibrary/ui/Panel;Ldev/ftb/mods/ftbquests/quest/task/Task;)V", at = @At("TAIL"))
+    private void astages$onCreate(Panel panel, Task task, CallbackInfo ci)
+    {
+        if (!(task instanceof SinkItemTask itemTask))
+            return;
+        
+        if (Minecraft.getInstance().player == null)
+            return;
+        
+        long id = itemTask.getId();
+        
+//        if (TaskAvailabilityCache.get(id) != null)
+//            return;
+
+        ANetworking.sendToServer(
+            new TaskAvailabilityRequestC2SPacket(id)
+        );
+    }
     
     @Inject(
         method = "draw(Lnet/minecraft/client/gui/GuiGraphics;Ldev/ftb/mods/ftblibrary/ui/Theme;IIII)V",
@@ -78,15 +102,20 @@ public abstract class TaskButtonMixin
     @Unique
     private static void aStagesExtra$drawButtonText(GuiGraphics graphics, Theme theme, int x, int y, int w, int h, SinkItemTask itemTask, TeamData teamData, LocalPlayer player)
     {
-        long remaining = Math.max(0,
-            itemTask.getMaxProgress() - teamData.getProgress(itemTask)
-        );
+        TaskAvailabilityCache.Data cached = TaskAvailabilityCache.get(itemTask.getId());
         
-        long have = ItemConsumeManager.countAvailable(player, itemTask, remaining);
-        boolean canSubmit = ItemConsumeManager.canConsume(player, itemTask, remaining);
+        if (cached == null)
+        {
+            // Pure rendering fallback — no networking
+            Component loading = Component.literal("…");
+            theme.drawString(graphics, loading, x + w / 2 - 2, y + h - 6, Color4I.GRAY, Theme.SHADOW);
+            return;
+        }
+        
+        long remaining = Math.max(0, itemTask.getMaxProgress() - teamData.getProgress(itemTask));
         
         Component text = Component.literal(
-            StringUtils.formatDouble(have, true)
+            StringUtils.formatDouble(cached.have(), true)
                 + "/"
                 + StringUtils.formatDouble(remaining, true)
         );
@@ -105,7 +134,7 @@ public abstract class TaskButtonMixin
             graphics,
             text,
             0, 0,
-            canSubmit ? Color4I.rgb(0x55FF55) : Color4I.WHITE,
+            cached.canSubmit() ? Color4I.rgb(0x55FF55) : Color4I.WHITE,
             Theme.SHADOW
         );
         
